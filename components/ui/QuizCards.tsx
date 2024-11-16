@@ -6,7 +6,7 @@ const QuizCards = ({answer}) => {
     return(
         <View>
             <Text>
-                {answer}
+                {answer.answer}
             </Text>
         </View>
     )
