@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { Button } from 'react-native-paper';
-import {View, StyleSheet} from 'react-native';
-
-import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import {ParamListBase, useNavigation} from '@react-navigation/native';
 interface ButtonProps {
     title : string,
+    path : string,
 }
 
 const StyledButton = ({title, path}: ButtonProps) => {
-    const navigation = useNavigation()
+    const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
     return (
         <Button mode="contained" onPress={() => navigation.navigate(path)}>
         {title}
