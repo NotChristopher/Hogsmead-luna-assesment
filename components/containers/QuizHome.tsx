@@ -1,29 +1,32 @@
 import React from 'react';
-import { View, Text, Button, FlatList, StyleSheet, ImageBackground, Alert } from 'react-native';
+import { View, Button, FlatList, StyleSheet, ImageBackground } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectAnswer } from '../store/slices/quizSlice';
-import {setHouseSlice} from '../store/slices/houseSlice';
 import {Questions} from '../mockData/Questions';
 import QuizHeader from '../ui/QuizHeader';
 import axios from 'axios';
-import QuizCards from '../ui/QuizCards';
 import { useNavigation } from '@react-navigation/native';
+import RNSecureStorage, {ACCESSIBLE} from 'rn-secure-storage';
 
 
 const QuizHome = () => {
   const dispatch = useDispatch();
-  const { currentQuestionIndex, traitCount,house } = useSelector(state => state.quiz);
+  const { currentQuestionIndex, traitCount, house } = useSelector(state => state.quiz);
   const question = Questions[currentQuestionIndex];
   const navigation = useNavigation();
 
   const fetchGroupForTrait = async (trait) => {
     let myTrait = trait;
     try {
-      const response = await axios.get(`https://wizard-world-api.herokuapp.com/Houses`);
+      const response = await axios.get('https://wizard-world-api.herokuapp.com/Houses');
       const myHouse = response.data.filter(house =>
         house.traits.some(trait => trait.name === myTrait[0])
       );
       console.log(myHouse[0].name);
+      const houseN = {
+        house : myHouse[0].name,
+      };
+      await RNSecureStorage.setItem('userHouse', JSON.stringify(houseN), {accessible: ACCESSIBLE.ALWAYS});
       dispatch(selectAnswer({house : myHouse[0].name}));
       navigation.navigate('HouseLanding');
     } catch (error) {
@@ -46,23 +49,25 @@ const QuizHome = () => {
     return maxTrait[0];
   };
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({ item } : any) => (
+    <View style={styles.button}>
     <Button title={item.answer} onPress={() => handleAnswerSelect(item.trait)} />
+    </View>
   );
 
   return (
-    <View style={styles.container}>
+      <View style={styles.container}>
       <ImageBackground source={require('../../assets/images/quizBg.png')} style={styles.image} />
       <QuizHeader question={question.question}/>
       <FlatList
         data={question.answers}
         renderItem={renderItem}
         keyExtractor={(item) => item.answer}
+        style ={styles.wrapper}
       />
       {currentQuestionIndex === Questions.length - 1 && (
         <Button title="See Results" onPress={() => getMajorityTrait()}/>
       )}
-      <Text>{house}</Text>
     </View>
   );
 };
@@ -72,7 +77,12 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  wrapper : {
     padding: 20,
+  },
+  button : {
+    marginTop: 10,
   },
   question: {
     fontSize: 18,

@@ -2,12 +2,14 @@ import * as React from 'react';
 import { Button } from 'react-native-paper';
 import {View, Text, StyleSheet} from 'react-native';
 import ShareButton from './styled/ShareButton';
+import StyledButton from './styled/StyledButton';
 
-const Footer = () => {
+const Footer = ({img}) => {
 
     return (
         <View>
-            <ShareButton />
+            <ShareButton src = {img}/>
+            <StyledButton title = {'proceed'} path = {'Potions'} />
         </View>
     );
 };
