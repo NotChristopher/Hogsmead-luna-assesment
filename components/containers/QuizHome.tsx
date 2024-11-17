@@ -2,71 +2,88 @@ import React from 'react';
 import { View, Button, FlatList, StyleSheet, ImageBackground } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectAnswer } from '../store/slices/quizSlice';
-import {Questions} from '../mockData/Questions';
+import { Questions } from '../mockData/Questions';
 import QuizHeader from '../ui/QuizHeader';
 import axios from 'axios';
-import { useNavigation } from '@react-navigation/native';
-import RNSecureStorage, {ACCESSIBLE} from 'rn-secure-storage';
+import { ParamListBase, useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 
-const QuizHome = () => {
+interface IRootState {
+  quiz: {
+    currentQuestionIndex: number;
+    traitCount: Record<string, number>;
+  };
+}
+
+interface Answer {
+  answer: string;
+  trait: any;
+}
+
+interface QuestionType {
+  question: any;
+  answers: Answer[];
+}
+
+const QuizHome: React.FC = () => {
   const dispatch = useDispatch();
-  const { currentQuestionIndex, traitCount, house } = useSelector(state => state.quiz);
-  const question = Questions[currentQuestionIndex];
-  const navigation = useNavigation();
+  const { currentQuestionIndex, traitCount } = useSelector((state: IRootState) => state.quiz);
+  const question: QuestionType = Questions[currentQuestionIndex];
+  const navigation = useNavigation<NativeStackNavigationProp<ParamListBase>>();
 
-  const fetchGroupForTrait = async (trait) => {
-    let myTrait = trait;
+  const fetchGroupForTrait = async (trait: string[]) => {
     try {
       const response = await axios.get('https://wizard-world-api.herokuapp.com/Houses');
-      const myHouse = response.data.filter(house =>
-        house.traits.some(trait => trait.name === myTrait[0])
+      const myHouse = response.data.filter((house: any) =>
+        house.traits.some((traitObj: any) => traitObj.name === trait[0])
       );
-      console.log(myHouse[0].name);
-      const houseN = {
-        house : myHouse[0].name,
-      };
-      await RNSecureStorage.setItem('userHouse', JSON.stringify(houseN), {accessible: ACCESSIBLE.ALWAYS});
-      dispatch(selectAnswer({house : myHouse[0].name}));
+      dispatch(selectAnswer({ house: myHouse[0]?.name }));
       navigation.navigate('HouseLanding');
     } catch (error) {
       console.error('Error fetching group data:', error);
     }
   };
 
-  const handleShowResults = (trait) => {
+  // Handle the result display
+  const handleShowResults = (trait: string[]) => {
     fetchGroupForTrait(trait);
-    dispatch(selectAnswer({majorityTrait : trait[0]}));
+    dispatch(selectAnswer({ majorityTrait: trait[0] }));
   };
 
-  const handleAnswerSelect = (trait) => {
+  // Handle when an answer is selected
+  const handleAnswerSelect = (trait: string[]) => {
     dispatch(selectAnswer({ trait }));
   };
 
+  // Does Trait Count for Majority
   const getMajorityTrait = () => {
-    const maxTrait = Object.entries(traitCount).reduce((a, b) => a[1] > b[1] ? a : b);
-    handleShowResults(maxTrait);
+    const maxTrait = Object.entries(traitCount).reduce((a, b) => (a[1] > b[1] ? a : b));
+    handleShowResults([maxTrait[0]]);
     return maxTrait[0];
   };
 
-  const renderItem = ({ item } : any) => (
+  const renderItem = ({ item }: { item: Answer }) => (
     <View style={styles.button}>
-    <Button title={item.answer} onPress={() => handleAnswerSelect(item.trait)} />
+      <Button title={item.answer} onPress={() => handleAnswerSelect(item.trait)} />
     </View>
   );
 
   return (
-      <View style={styles.container}>
+    <View style={styles.container}>
       <ImageBackground source={require('../../assets/images/quizBg.png')} style={styles.image} />
-      <QuizHeader question={question.question}/>
-      <FlatList
-        data={question.answers}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.answer}
-        style ={styles.wrapper}
-      />
-      {currentQuestionIndex === Questions.length - 1 && (
-        <Button title="See Results" onPress={() => getMajorityTrait()}/>
+      {currentQuestionIndex === Questions.length - 1 ? (
+        <Button title="See Results" onPress={getMajorityTrait} />
+      ) : (
+        <>
+          <QuizHeader question={question.question} />
+          <FlatList
+            data={question.answers}
+            renderItem={renderItem}
+            keyExtractor={(item) => item.answer}
+            style={styles.wrapper}
+          />
+        </>
       )}
     </View>
   );
@@ -78,10 +95,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  wrapper : {
+  wrapper: {
     padding: 20,
   },
-  button : {
+  button: {
     marginTop: 10,
   },
   question: {
@@ -94,7 +111,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-},
+  },
 });
 
 export default QuizHome;

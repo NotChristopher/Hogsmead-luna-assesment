@@ -8,16 +8,20 @@ export const fetchElixirs = createAsyncThunk(
       let url = 'https://wizard-world-api.herokuapp.com/Elixirs?';
 
       if (searchQuery) {
-        url += `name=${searchQuery.toUpperCase()}&`;  // Search by name
+        // Because of Api search structure I need to capitilise each word
+        let validSearch = searchQuery
+        .split(' ')
+        .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+        .join(' ');
+        url += `name=${validSearch}&`;
       }
 
       if (filter) {
-        url += `Ingredient=${filter}&`;  // Filter by ingredients
+        url += `Ingredient=${filter}&`;
       }
 
       const response = await fetch(url);
       const data = await response.json();
-      console.log('test' + data);
       return data;
     }
   );
@@ -39,11 +43,11 @@ const elixirsSlice = createSlice({
       state.filter = action.payload;
     },
     setPage: (state, action) => {
-      state.page = action.payload;
+      state.page = action.payload; //This does nothing now, I wanted to paginate but currenlty i don't have time
     },
     setActivePotion : (state, action) => {
         state.potion = action.payload;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder

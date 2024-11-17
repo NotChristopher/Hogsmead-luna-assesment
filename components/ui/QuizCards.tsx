@@ -1,7 +1,11 @@
 import * as React from 'react';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text} from 'react-native';
 
-const QuizCards = ({answer}) => {
+interface Props {
+    answer : any,
+}
+
+const QuizCards = ({answer} : Props) => {
 
     return(
         <View>
@@ -9,6 +13,6 @@ const QuizCards = ({answer}) => {
                 {answer.answer}
             </Text>
         </View>
-    )
+    );
 };
 export default QuizCards;
