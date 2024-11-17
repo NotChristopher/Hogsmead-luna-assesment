@@ -5,9 +5,11 @@ import StyledButton from '../ui/styled/StyledButton';
 import ReactNativeBiometrics from 'react-native-biometrics';
 
 
-const HomeScreen = ({navigation}) =>{
+const HomeScreen = () =>{
+
     const [biometricStatus, setBiometricStatus] = React.useState('');
     const biometrics = new ReactNativeBiometrics();
+
     const checkBiometrics = async () => {
         try {
           const { available, biometryType } = await biometrics.isSensorAvailable();
@@ -21,14 +23,12 @@ const HomeScreen = ({navigation}) =>{
           setBiometricStatus('Error checking biometrics');
         }
       };
-    
-      // Authenticate with biometrics
+
       const authenticateWithBiometrics = async () => {
         try {
           const { success, error } = await biometrics.simplePrompt({
-            promptMessage: 'Authenticate with Biometrics', // Prompt message shown to user
+            promptMessage: 'Authenticate with Biometrics',
           });
-    
           if (success) {
             Alert.alert('Authentication Successful', 'You have been authenticated!');
           } else if (error) {
@@ -38,28 +38,28 @@ const HomeScreen = ({navigation}) =>{
           Alert.alert('Biometric Authentication Error', error.message);
         }
       };
+
     return(
         <View style={styles.container}>
             <ImageBackground source = {require('../../assets/images/homebg.png')} resizeMode="cover" style = {styles.image} />
             <View style ={styles.textWrapepr}>
-            <Text style={styles.text}>
-            Welcome to Hogsmead.
-            </Text>
-            <Text style={styles.text}>
-            Your pocket sized wizardly companion
-            </Text>
-            <Text style={styles.text}>
-            Before we move forward we need to get you sorted to an appropriate house
-            </Text>
+              <Text style={styles.text}>
+              Welcome to Hogsmead.
+              </Text>
+              <Text style={styles.text}>
+              Your pocket sized wizardly companion
+              </Text>
+              <Text style={styles.text}>
+              Before we move forward we need to get you sorted to an appropriate house
+              </Text>
             </View>
             <View style={styles.inputWrapper}>
-            <StyledInputField label={'Name'}/>
+              <StyledInputField label={'Name'} />
             </View>
             <View style={styles.buttonWrapper}>
-            <StyledButton title={'Step Through The Veil'} path ={'QuizHome'} onPress={authenticateWithBiometrics} />
-            <Text style={styles.text}>{biometricStatus}</Text>
-            <Button title="Check Biometrics Availability" onPress={checkBiometrics} />
-            <Button title="Authenticate with Biometrics" onPress={authenticateWithBiometrics} />
+              <StyledButton title={'Step Through The Veil'} path ={'QuizHome'} onPress={authenticateWithBiometrics} />
+              <Text style={styles.text}>{biometricStatus}</Text>
+              <Button title="Authenticate with Biometrics" onPress={authenticateWithBiometrics} />
             </View>
         </View>
     );

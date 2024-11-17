@@ -5,7 +5,7 @@ import HomeScreen from './components/containers/HomeScreen';
 import QuizHome from './components/containers/QuizHome';
 import { Provider } from 'react-redux';
 import { store } from './components/store/store';
-
+import HouseLanding from './components/containers/HouseLanding';
 
 const Stack = createStackNavigator();
 
@@ -15,7 +15,7 @@ function RootStack() {
     <Stack.Navigator>
       <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
       <Stack.Screen name="QuizHome" component={QuizHome} options={{ headerShown: false }}/>
-
+      <Stack.Screen name="HouseLanding" component={HouseLanding} options={{headerShown: false}} />
     </Stack.Navigator>
     </Provider>
   );

@@ -54,8 +54,7 @@ describe('QuizScreen', () => {
     });
 
     fireEvent.press(getByText('See Results'));
-    const state = store.getState();
-    expect(state.quiz.majorityTrait).toBe('Courage');
+    expect(getByText('Gryffindor')).toBeTruthy();
   });
 
 });

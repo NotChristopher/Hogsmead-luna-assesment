@@ -8,9 +8,9 @@ const initialState = {
     Courage: 0,
     Cunning: 0,
     Loyalty:0,
-    Intelligence: 0,
+    Inteligence: 0,
   },
-  majorityTrait : '',
+  house : '',
 };
 
 const quizSlice = createSlice({
@@ -18,15 +18,15 @@ const quizSlice = createSlice({
   initialState,
   reducers: {
     selectAnswer: (state, action) => {
-      const { trait } = action.payload;
+      const {trait} = action.payload;
+      const {house} = action.payload;
+      state.house = house;
       state.answers.push(trait);
       state.traitCount[trait] += 1;
-
       if (state.currentQuestionIndex < Questions.length - 1) {
         state.currentQuestionIndex += 1;
       }
     },
-    resetQuiz: () => initialState,
   },
 });
 

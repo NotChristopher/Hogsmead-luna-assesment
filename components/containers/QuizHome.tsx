@@ -2,36 +2,35 @@ import React from 'react';
 import { View, Text, Button, FlatList, StyleSheet, ImageBackground, Alert } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectAnswer } from '../store/slices/quizSlice';
+import {setHouseSlice} from '../store/slices/houseSlice';
 import {Questions} from '../mockData/Questions';
 import QuizHeader from '../ui/QuizHeader';
 import axios from 'axios';
 import QuizCards from '../ui/QuizCards';
-
+import { useNavigation } from '@react-navigation/native';
 
 
 const QuizHome = () => {
   const dispatch = useDispatch();
-  const { currentQuestionIndex, traitCount, majorityTrait } = useSelector(state => state.quiz);
-
+  const { currentQuestionIndex, traitCount,house } = useSelector(state => state.quiz);
   const question = Questions[currentQuestionIndex];
-  const houseTraite = majorityTrait;
+  const navigation = useNavigation();
 
   const fetchGroupForTrait = async (trait) => {
     let myTrait = trait;
     try {
       const response = await axios.get(`https://wizard-world-api.herokuapp.com/Houses`);
-      const housesWithCunning = response.data.filter(house => 
+      const myHouse = response.data.filter(house =>
         house.traits.some(trait => trait.name === myTrait[0])
       );
-      // console.log(housesWithCunning, myTrait);
-      // Handle your group data here (e.g., update the state, show it in UI)
+      console.log(myHouse[0].name);
+      dispatch(selectAnswer({house : myHouse[0].name}));
+      navigation.navigate('HouseLanding');
     } catch (error) {
       console.error('Error fetching group data:', error);
     }
   };
-  
-  
-  // Use the fetch function in your QuizScreen
+
   const handleShowResults = (trait) => {
     fetchGroupForTrait(trait);
     dispatch(selectAnswer({majorityTrait : trait[0]}));
@@ -41,11 +40,10 @@ const QuizHome = () => {
     dispatch(selectAnswer({ trait }));
   };
 
-  // Function to get the majority trait at the end of the quiz
   const getMajorityTrait = () => {
     const maxTrait = Object.entries(traitCount).reduce((a, b) => a[1] > b[1] ? a : b);
     handleShowResults(maxTrait);
-    return maxTrait[0]; // Majority trait name
+    return maxTrait[0];
   };
 
   const renderItem = ({ item }) => (
@@ -64,6 +62,7 @@ const QuizHome = () => {
       {currentQuestionIndex === Questions.length - 1 && (
         <Button title="See Results" onPress={() => getMajorityTrait()}/>
       )}
+      <Text>{house}</Text>
     </View>
   );
 };
