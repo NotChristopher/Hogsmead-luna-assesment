@@ -1,30 +1,23 @@
 import * as React from 'react';
 import {TextInput} from 'react-native-paper';
-import {View, Text, StyleSheet} from 'react-native';
 
 
 interface InputProps{
     label : string,
     setState : any,
-    state : any,
-}
+    state: any,
+  }
 
-const StyledInputField = ({label, color} : InputProps) => {
-
-    const [text, setText] = React.useState('');
+const StyledInputField = ({label, setState, state} : InputProps) => {
 
     return (
       <TextInput
         placeholder={label}
         mode = "outlined"
-        value={text}
-        onChangeText={text => setText(text)}
-        outlineColor ={color}
-        activeOutlineColor={color}
+        value={state}
+        onChangeText={textN => setState(textN)}
+
       />
     );
   };
-  const styles = StyleSheet.create({
-    
-  });
 export default StyledInputField;

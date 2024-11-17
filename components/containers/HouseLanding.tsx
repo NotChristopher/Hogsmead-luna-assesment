@@ -14,7 +14,7 @@ const HouseLanding = ({}) => {
         <View>
             <Header house={house ? house : 'Gryffindor' } />
             <Image source={getImageByString(src)} style={[styles.image ,{resizeMode: 'contain'}]} />
-            <Footer />
+            <Footer img ={getImageByString(src)} />
         </View>
     )
 };
