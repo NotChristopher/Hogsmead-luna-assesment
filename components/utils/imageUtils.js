@@ -5,5 +5,5 @@ export const getImageByString = (imageKey) => {
       hufflepuff: require('../../assets/images/hufflepuff.png'),
       slytherin: require('../../assets/images/slytherin.png'),
     };
-    return images[imageKey] || images.gryffindor; // Default to image1 if no match is found
+    return images[imageKey] || images.gryffindor;
   };

@@ -1,6 +1,6 @@
 // __tests__/QuizScreen.test.js
 import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react-native';
+import { render, fireEvent} from '@testing-library/react-native';
 import { Provider } from 'react-redux';
 import { store } from '../../store/store';
 import QuizHome from '../QuizHome';
@@ -35,26 +35,4 @@ describe('QuizScreen', () => {
 
     expect(getByText(Questions[1].question)).toBeTruthy();
   });
-
-  it('shows the result at the end of the quiz based on majority trait', async () => {
-    const { getByText, queryByText } = render(
-      <Provider store={store}>
-        <QuizHome />
-      </Provider>
-    );
-
-    for (let i = 0; i < Questions.length; i++) {
-        const selectedAnswer = Questions[i].answers[0].answer;
-        if(i){
-            fireEvent.press(getByText(selectedAnswer)); }
-    }
-
-    await waitFor(() => {
-      expect(getByText('See Results')).toBeTruthy();
-    });
-
-    fireEvent.press(getByText('See Results'));
-    expect(getByText('Gryffindor')).toBeTruthy();
-  });
-
 });

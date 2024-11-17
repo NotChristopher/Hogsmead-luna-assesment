@@ -1,7 +1,10 @@
 import * as React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 
-const QuizHeader = ({question}) => {
+interface Props {
+    question : string,
+}
+const QuizHeader = ({question} : Props ) => {
 
     return(
         <View style={styles.container}>
@@ -9,7 +12,7 @@ const QuizHeader = ({question}) => {
                 {question}
             </Text>
         </View>
-    )
+    );
 };
 const styles = StyleSheet.create({
     container: {

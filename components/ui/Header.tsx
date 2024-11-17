@@ -1,8 +1,10 @@
 import * as React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 
-const Header = ({house}) => {
-   
+interface Props {
+    house: string,
+}
+const Header = ({house} : Props) => {
     return(
         <View style={styles.container}>
             <Text style={styles.text}>You are house {house}!!</Text>
@@ -20,6 +22,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 24,
         margin: 'auto',
-    }
+    },
   });
 export default Header;

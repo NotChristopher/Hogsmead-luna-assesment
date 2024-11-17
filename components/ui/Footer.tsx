@@ -1,16 +1,36 @@
 import * as React from 'react';
-import { Button } from 'react-native-paper';
-import {View, Text, StyleSheet} from 'react-native';
+import {View, StyleSheet} from 'react-native';
 import ShareButton from './styled/ShareButton';
 import StyledButton from './styled/StyledButton';
 
-const Footer = ({img}) => {
+interface FooterProps {
+    img : 'string',
+}
+const Footer = ({img} : FooterProps) => {
 
     return (
-        <View>
-            <ShareButton src = {img}/>
+        <View style ={styles.container}>
+            <View style={styles.buttonWrapper}>
+
+            <ShareButton  src = {img}/>
+            </View>
+            <View style={styles.buttonWrapper}>
+
             <StyledButton title = {'proceed'} path = {'Potions'} />
+            </View>
         </View>
     );
 };
 export default Footer;
+
+const styles = StyleSheet.create({
+    container: {
+        padding: 10,
+        minHeight: 100,
+    },
+    buttonWrapper : {
+        width: 120,
+        margin: 'auto',
+        marginBottom: 10,
+    },
+  });
